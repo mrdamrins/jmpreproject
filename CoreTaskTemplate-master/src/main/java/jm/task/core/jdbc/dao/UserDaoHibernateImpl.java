@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.dao;
 
 import java.util.List;
+import java.util.logging.Logger;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.HibernateException;
@@ -10,6 +11,7 @@ import org.hibernate.criterion.Restrictions;
 
 public class UserDaoHibernateImpl implements UserDao {
 
+  private final static Logger logger = Logger.getLogger(UserDaoHibernateImpl.class.getName());
   private Session session;
   Transaction transaction = null;
 
@@ -54,6 +56,7 @@ public class UserDaoHibernateImpl implements UserDao {
     }
     transaction.commit();
     session.close();
+    logger.info("User с именем " + name + " добавлен в базу данных!");
   }
 
   @Override
