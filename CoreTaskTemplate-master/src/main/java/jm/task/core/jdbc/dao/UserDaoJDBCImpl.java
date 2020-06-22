@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
@@ -65,6 +66,7 @@ public class UserDaoJDBCImpl implements UserDao {
         stmt.setByte(3, age);
         stmt.execute();
         stmt.close();
+        System.out.println("User с именем " + name + " добавлен в базу данных!");
       }
     } catch (SQLException e) {
 
