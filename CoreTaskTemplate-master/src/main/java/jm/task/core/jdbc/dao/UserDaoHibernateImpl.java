@@ -1,13 +1,11 @@
 package jm.task.core.jdbc.dao;
 
 import java.util.List;
-import java.util.logging.Logger;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
 
 public class UserDaoHibernateImpl implements UserDao {
 
@@ -46,14 +44,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
   @Override
   public void saveUser(String name, String lastName, byte age) {
-    transaction = session.beginTransaction();
-    User user = (User) session.createCriteria(User.class)
-        .add(Restrictions.like("name", name))
-        .uniqueResult();
-    if (user == null) {
-      session.save(new User(name, lastName, age));
-    }
-    transaction.commit();
+    session = Util.getSessionFactory().openSession();
+    User user = new User(name, lastName, age);
+    session.save(user);
     session.close();
     System.out.println("User с именем " + name + " добавлен в базу данных!");
   }
@@ -71,18 +64,14 @@ public class UserDaoHibernateImpl implements UserDao {
 
   @Override
   public List<User> getAllUsers() {
-    transaction = session.beginTransaction();
-    List<User> users = session.createQuery("FROM User").list();
-    transaction.commit();
-    session.close();
-    return users;
+    return Util.getSessionFactory().openSession().createQuery("FROM User").list();
   }
 
   @Override
   public void cleanUsersTable() {
     try {
       transaction = session.beginTransaction();
-      session.createQuery("DELETE User").executeUpdate();
+      session.createQuery("DELETE user").executeUpdate();
       transaction.commit();
     } catch (HibernateException e) {
       if (transaction != null) {
